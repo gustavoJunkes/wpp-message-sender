@@ -1,23 +1,22 @@
 import { start } from 'repl';
 import { create, Message, Whatsapp } from 'venom-bot';
+import { MessageHandlerUtils } from './messageHandler';
 
 export class MessageSender {
     client!: Whatsapp;
     statusSession!: string;
     qrCode!: string
-    contactsAllowedToAnswer: string[] = [];
+    messageHandler = new MessageHandlerUtils();
 
-    constructor() {
-        this.contactsAllowedToAnswer.push("Mãe")
-        this.init();
+    constructor(sessionName: string) {
+        this.init(sessionName);
     }
 
-    private init() {
+    private init(sessionName: string) {
         const venom = require('venom-bot');
 
         const start = (client: Whatsapp) => {
             this.client = client;
-          //  this.sendText("554788591737", "Olá"); // todo: receber numero e mensagem por parametro
         }
 
         const qr = (base64QrImg: string) => {
@@ -29,11 +28,11 @@ export class MessageSender {
         }
 
         venom.create({
-            session: 'main-session'
+            session: sessionName
         }, qr )
         .then(async (client: Whatsapp) => {
             start(client);
-            client.onMessage(async message => {
+            client.onAnyMessage(async message => {
                 console.log(message)
                 this.handleMessage(message);
             })
@@ -44,10 +43,21 @@ export class MessageSender {
     }   
 
     async sendText(to: string, text: string) {
-        if(!to.includes("@c.us")) {
+       /* if(!to.includes("@c.us") && !to.includes("@g.us")) {
             to = to + "@c.us";
-        }
-        this.client.sendText(to, text);
+        }*/
+        await this.client.checkNumberStatus(to).then((status) => {
+            console.log("chegueiaqui")
+            console.log(status);
+            console.log(to.substring(0, 12))
+        }).catch((error: any) => {
+            console.error(error)
+        })
+        this.client.sendText(to, text).then(() => {
+            console.log("Final send text.. passing here then god's up")
+        }).catch(error => {
+            console.error(error)
+        });
     }
 
     async getConnectionState() {
@@ -57,14 +67,18 @@ export class MessageSender {
         });
     }
 
-    async handleMessage(message: Message) {
-        if(this.contactsAllowedToAnswer.includes(message.chat.contact.name)) { // trava de segurança pra controlar quem é respondido :)
-            var text = "Olá " + message.chat.contact.pushname + "!"
-            + " Passando pra dizer que estou ocupado ou não consigo responder agora. Quem fala é o robô de resposta automática do Gustavo." 
-            + " Isso aí, um robô. Mas fica tranquilo, assim que possível ele te retorna ;)"
-
-            this.sendText(message.chatId, text);
-        }
+    async handleMessage(message: Message) { 
+            this.messageHandler.handleMessage(message).then(toSend => {
+                console.log(toSend.message);
+                this.sendText(toSend.to, toSend.message).then(() => {
+                    console.log("Your message was successfully sent!")
+                }).catch(error => {
+                    console.error(error)
+                })
+                //this.sendText(toSend.to, toSend.message);
+            }).catch(error => {
+                console.error(error)
+            })            
     }
    
 }

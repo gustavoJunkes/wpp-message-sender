@@ -4,7 +4,7 @@ import { start } from 'repl';
 import { create, Whatsapp } from 'venom-bot';
 import { MessageSender } from "./messageSender";
 
-const messageSender = new MessageSender();
+const messageSender = new MessageSender("primary/messageSender-session");
 
 const app = express()
 app.use(express.json())

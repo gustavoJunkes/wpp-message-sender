@@ -42,6 +42,12 @@ export class MessageSender {
         this.client.sendText(to, text);
     }
 
+    async getConnectionState() {
+        return this.client.getConnectionState().then((state) => {
+            this.statusSession = state;
+            return this.statusSession;
+        });
+    }
     
 }
 

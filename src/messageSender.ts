@@ -45,14 +45,14 @@ export class MessageSender {
     async sendText(to: string, text: string) {
        /* if(!to.includes("@c.us") && !to.includes("@g.us")) {
             to = to + "@c.us";
-        }*/
+        }*//*
         await this.client.checkNumberStatus(to).then((status) => {
             console.log("chegueiaqui")
             console.log(status);
             console.log(to.substring(0, 12))
         }).catch((error: any) => {
             console.error(error)
-        })
+        })*/
         this.client.sendText(to, text).then(() => {
             console.log("Final send text.. passing here then god's up")
         }).catch(error => {

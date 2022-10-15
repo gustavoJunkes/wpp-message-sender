@@ -7,9 +7,10 @@ import { MessageSender } from "./messageSender";
 export class MessageHandlerUtils {
     contactsAllowedToAnswer: string[] = [];
     translateGroup = '120363026697593827@g.us'; // esse valor está errado!
+    translateNumbers: string[] = [];
 
     constructor() {
-        this.contactsAllowedToAnswer.push("Mãe")
+        //this.contactsAllowedToAnswer.push("Mãe")
 
     }
 
@@ -19,22 +20,35 @@ export class MessageHandlerUtils {
             to: ""
         }
 
-        if(!message.fromMe && this.contactsAllowedToAnswer.includes(message.chat.contact.name)) { // trava de segurança pra controlar quem é respondido :)
+        if(message.content === "Translate" && !message.fromMe) { // trava de segurança pra controlar quem é respondido :)
+           console.log("1")
             var text = "Opa " + message.chat.contact.pushname + "!"
-            + " Passando pra dizer que estou ocupado ou não consigo responder agora. Quem fala é o robô de resposta automática do Gustavo." 
-            + " Isso aí, um robô. Mas fica tranquilo, assim que possível ele te retorna ;)"
+            + " Ativado o modo de tradução para você. Para desativar envie a seguinte mensagem: stop translate"
+            
+            this.translateNumbers.push(message.sender.id);
 
             toReturn.message = text;
             toReturn.to = message.chatId;
 
-        } else if (message.from = this.translateGroup) { 
+        } else if (message.content == "stop translate" && !message.fromMe) {
+            console.log("2")
+
+            this.translateNumbers.filter(number => {
+                number !== message.sender.id
+            })
+
+        } else if (message.from == this.translateGroup || this.translateNumbers.includes(message.sender.id) &&  !message.fromMe) { 
+            console.log("3")
+
+            console.log(message)
             await this.translate(message.content).then(translated => {
-                toReturn.to = this.translateGroup;
+                toReturn.to = message.sender.id;
                 toReturn.message = translated;
             }).catch(error => {
                 console.error(error)
             })                                                  
-        }
+        } 
+        console.log("4")
         console.log(toReturn.message)
         return toReturn;
     }

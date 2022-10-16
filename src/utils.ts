@@ -1,5 +1,9 @@
 export class Utils {
 
+    constructor() {
+
+    }
+
     valueInIgnoreCase (str1: string, str2: string): boolean {
         if (str1 === str2) {
             return true;
@@ -18,4 +22,4 @@ export class Utils {
         return false;
     }
 }
-global.exports.utils = Utils
+module.exports.utils = Utils

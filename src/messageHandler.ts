@@ -1,5 +1,6 @@
 import { Message } from "venom-bot";
 import { MessageSender } from "./messageSender";
+import { Utils } from "./utils";
 
 /**
  * Aqui vão os métodos relacionados com o tratamento de mensagens
@@ -8,6 +9,7 @@ export class MessageHandlerUtils {
     contactsAllowedToAnswer: string[] = [];
     translateGroup = '120363026697593827@g.us'; // esse valor está errado!
     translateNumbers: string[] = [];
+    utils = new Utils();
 
     constructor() {
         //this.contactsAllowedToAnswer.push("Mãe")
@@ -19,20 +21,21 @@ export class MessageHandlerUtils {
             message: "",
             to: ""
         }
-        if(message.content === "Translate" && !message.fromMe) { // trava de segurança pra controlar quem é respondido :)
-            var text = "Opa " + message.chat.contact.pushname + "!"
-            + " Ativado o modo de tradução para você. Para desativar envie a seguinte mensagem: stop translate"
+        if((message.content === "Translate"  || this.utils.valueInIgnoreCase("translate", message.content)) && !this.utils.valueInIgnoreCase("stop", message.content) && !message.fromMe) { // trava de segurança pra controlar quem é respondido :)
+            var text = "Olá " + message.chat.contact.pushname + "!"
+            + " Ativado o modo de tradução para você. A partir de agora, todas as suas mensagens serão traduzidas. Para desativar envie a seguinte mensagem: stop translate"
             
             this.translateNumbers.push(message.sender.id);
 
             toReturn.message = text;
             toReturn.to = message.chatId;
 
-        } else if (message.content == "stop translate" && !message.fromMe) {
+        } else if (this.utils.valueInIgnoreCase("stop translate", message.content) && !message.fromMe) {
             this.translateNumbers.filter(number => {
                 number !== message.sender.id
             })
-
+            toReturn.message = "Ok, a partir de agora suas mensagens não serão mais traduzidas."
+            toReturn.to = message.from;
         } else if (message.from == this.translateGroup || this.translateNumbers.includes(message.sender.id) &&  !message.fromMe) { 
             console.log(message)
             await this.translate(message.content).then(translated => {

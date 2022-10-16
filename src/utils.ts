@@ -6,3 +6,4 @@ export class Utils {
         str1.localeCompare(str2, undefined, {sensitivity: 'accent'})
     }
 }
+global.exports.utils = Utils

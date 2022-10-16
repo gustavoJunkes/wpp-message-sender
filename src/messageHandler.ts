@@ -45,15 +45,29 @@ export class MessageHandlerUtils {
         console.log(toReturn.message)
         return toReturn;
     }
-
-    async translate(text: string): Promise<string> {
+    // verificar qual a lingua, se a msg for em ingles traduzir para português, se for em pt traduz pra ingles
+    // traduzir pro ing e pro port, se o resultado for diferente do texto inicial, retorna esse
+    async translate(textToTranslate: string): Promise<string> {
         const { translate } = require('free-translate');
 
-        return await translate(text, {from: 'pt', to: 'en'}).then((message: string) => {
+        var textPt = await translate(textToTranslate, {to: 'pt'}).then((message: string) => {
             return message;
         }).catch((error: any) => {
             console.error(error);
         })
+
+        if (textPt != textToTranslate) {
+            return textPt;
+        } else {
+            var textEng = await translate(textToTranslate, {to: 'en'}).then((message: string) => {
+                return message;
+            }).catch((error: any) => {
+                console.error(error);
+            })
+            return textEng;
+        }
+
+        
 
     }
 

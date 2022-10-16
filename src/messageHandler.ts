@@ -19,9 +19,7 @@ export class MessageHandlerUtils {
             message: "",
             to: ""
         }
-
         if(message.content === "Translate" && !message.fromMe) { // trava de segurança pra controlar quem é respondido :)
-           console.log("1")
             var text = "Opa " + message.chat.contact.pushname + "!"
             + " Ativado o modo de tradução para você. Para desativar envie a seguinte mensagem: stop translate"
             
@@ -31,15 +29,11 @@ export class MessageHandlerUtils {
             toReturn.to = message.chatId;
 
         } else if (message.content == "stop translate" && !message.fromMe) {
-            console.log("2")
-
             this.translateNumbers.filter(number => {
                 number !== message.sender.id
             })
 
         } else if (message.from == this.translateGroup || this.translateNumbers.includes(message.sender.id) &&  !message.fromMe) { 
-            console.log("3")
-
             console.log(message)
             await this.translate(message.content).then(translated => {
                 toReturn.to = message.sender.id;
@@ -48,7 +42,6 @@ export class MessageHandlerUtils {
                 console.error(error)
             })                                                  
         } 
-        console.log("4")
         console.log(toReturn.message)
         return toReturn;
     }

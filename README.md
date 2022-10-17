@@ -9,5 +9,11 @@ API and WhatsApp bot that can:
 
 ## How to run locally
 
-1. 
+1. Clone the code locally.
+2. Run ``` npm install ```.
+3. Run ```npm run dev```.
+4. Scan the QR code that appears on the console.
 
+## Contribute
+
+If you would like to contribute with the project, adding a new feature or a fix, open an issue and a related pull request.

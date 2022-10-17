@@ -7,4 +7,7 @@ API and WhatsApp bot that can:
     - Translate WhatsApp messages sent in EN-US to PT-BR.
 
 
-## How to run
+## How to run locally
+
+1. 
+

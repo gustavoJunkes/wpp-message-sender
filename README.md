@@ -1,6 +1,8 @@
 # wpp-message-sender
 
-API and WhatsApp bot that can:
+I made this project to play around with WhatsApp integration using the venom library.
+
+It consists in a API and WhatsApp bot that can:
 - Send WhatsApp messages via API endpoint.
 - Translate WhatsApp messages.
     - Translate WhatsApp messages sent in PT-BR to EN-US.
